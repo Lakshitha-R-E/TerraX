@@ -25,8 +25,14 @@ from datetime import datetime
 
 router = APIRouter()
 
-UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "uploads", "general")
-os.makedirs(UPLOAD_DIR, exist_ok=True)
+if os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
+    UPLOAD_DIR = "/tmp/uploads/general"
+else:
+    UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "uploads", "general")
+try:
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+except Exception:
+    pass
 
 
 @router.post("")

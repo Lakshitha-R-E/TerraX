@@ -20,8 +20,14 @@ import pypdf
 
 router = APIRouter()
 
-UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "uploads", "floor_plans")
-os.makedirs(UPLOAD_DIR, exist_ok=True)
+if os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
+    UPLOAD_DIR = "/tmp/uploads/floor_plans"
+else:
+    UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "uploads", "floor_plans")
+try:
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+except Exception:
+    pass
 
 
 class FloorPlanLinkRequest(BaseModel):

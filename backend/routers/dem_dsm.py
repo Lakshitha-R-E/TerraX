@@ -21,10 +21,17 @@ import rasterio
 router = APIRouter()
 DEM_MODEL_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data", "dem.json")
 
-UPLOAD_DIR_DEM = os.path.join(os.path.dirname(__file__), "..", "data", "uploads", "dem")
-UPLOAD_DIR_DSM = os.path.join(os.path.dirname(__file__), "..", "data", "uploads", "dsm")
-os.makedirs(UPLOAD_DIR_DEM, exist_ok=True)
-os.makedirs(UPLOAD_DIR_DSM, exist_ok=True)
+if os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
+    UPLOAD_DIR_DEM = "/tmp/uploads/dem"
+    UPLOAD_DIR_DSM = "/tmp/uploads/dsm"
+else:
+    UPLOAD_DIR_DEM = os.path.join(os.path.dirname(__file__), "..", "data", "uploads", "dem")
+    UPLOAD_DIR_DSM = os.path.join(os.path.dirname(__file__), "..", "data", "uploads", "dsm")
+try:
+    os.makedirs(UPLOAD_DIR_DEM, exist_ok=True)
+    os.makedirs(UPLOAD_DIR_DSM, exist_ok=True)
+except Exception:
+    pass
 
 
 @router.get("/dem")

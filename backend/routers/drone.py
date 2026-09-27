@@ -20,8 +20,14 @@ import rasterio
 
 router = APIRouter()
 
-UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "uploads", "drone")
-os.makedirs(UPLOAD_DIR, exist_ok=True)
+if os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
+    UPLOAD_DIR = "/tmp/uploads/drone"
+else:
+    UPLOAD_DIR = os.path.join(os.path.dirname(__file__), "..", "data", "uploads", "drone")
+try:
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+except Exception:
+    pass
 
 
 class DroneProcessRequest(BaseModel):

@@ -7,13 +7,27 @@ import json
 import os
 from datetime import datetime
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "cadastral.db")
+ORIGINAL_DB_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "cadastral.db")
+
+if os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
+    DB_PATH = "/tmp/cadastral.db"
+    if not os.path.exists(DB_PATH) and os.path.exists(ORIGINAL_DB_PATH):
+        try:
+            import shutil
+            shutil.copyfile(ORIGINAL_DB_PATH, DB_PATH)
+        except Exception as e:
+            print(f"[WARN] Failed to copy SQLite database to /tmp: {e}")
+else:
+    DB_PATH = ORIGINAL_DB_PATH
 
 
 def get_db():
     conn = sqlite3.connect(DB_PATH, timeout=60.0)
     conn.row_factory = sqlite3.Row
-    conn.execute("PRAGMA journal_mode = WAL")
+    try:
+        conn.execute("PRAGMA journal_mode = WAL")
+    except Exception:
+        pass
     conn.execute("PRAGMA busy_timeout = 30000")
     return conn
 

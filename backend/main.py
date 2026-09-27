@@ -68,7 +68,12 @@ except Exception as _e:
 
 @app.on_event("startup")
 async def startup():
-    os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
+    try:
+        db_dir = os.path.dirname(DB_PATH)
+        if db_dir:
+            os.makedirs(db_dir, exist_ok=True)
+    except Exception:
+        pass
     init_db()
     from models.database import get_db
     conn = get_db()
