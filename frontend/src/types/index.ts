@@ -370,3 +370,31 @@ export interface MicrosoftBuildingsResponse {
   };
   features: MicrosoftBuildingFeature[];
 }
+
+// ─── Authentication Types ───────────────────────────────────────────────────
+export type UserRole = 'Admin' | 'Surveyor' | 'Authority Viewer';
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  name: string;
+  role: UserRole;
+  department: string;
+  badgeNumber?: string;
+  avatar?: string;
+  token?: string;
+}
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+  role: UserRole;
+}
+
+export interface AuthResponse {
+  success: boolean;
+  user?: AuthUser;
+  token?: string;
+  error?: string;
+}
+

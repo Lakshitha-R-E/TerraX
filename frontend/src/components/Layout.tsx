@@ -4,7 +4,8 @@ import {
   LayoutDashboard, Map, Building2, Key, Layers, ArrowDown,
   ShieldCheck, History, Database, Search, Bell,
   ChevronLeft, ChevronRight, Share2, Cpu, Fingerprint,
-  ArrowUpDown, GitBranch, Sparkles, UploadCloud, PlusCircle
+  ArrowUpDown, GitBranch, Sparkles, UploadCloud, PlusCircle,
+  LogOut, UserCheck
 } from 'lucide-react';
 import { useAppStore } from '../store/useAppStore';
 import clsx from 'clsx';
@@ -32,9 +33,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const {
     sidebarOpen, setSidebarOpen,
     searchQuery, setSearchQuery,
-    userRole, setUserRole
+    userRole, setUserRole,
+    currentUser, logout
   } = useAppStore();
   const navigate = useNavigate();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login', { replace: true });
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -136,9 +143,40 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             </div>
 
             {/* Notification Icon */}
-            <button className="p-1.5 rounded text-slate-500 hover:text-slate-700 hover:bg-slate-100 relative">
+            <button
+              aria-label="System Notifications"
+              className="p-1.5 rounded text-slate-500 hover:text-slate-700 hover:bg-slate-100 relative"
+            >
               <Bell className="w-4 h-4" />
               <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-blue-600" />
+            </button>
+
+            {/* Authenticated User Profile Badge */}
+            {currentUser && (
+              <div className="hidden sm:flex items-center gap-2 pl-2 border-l border-slate-200">
+                <div className="w-7 h-7 rounded-full bg-blue-100 text-blue-700 border border-blue-200 flex items-center justify-center font-bold text-xs">
+                  {currentUser.name ? currentUser.name.charAt(0) : 'U'}
+                </div>
+                <div className="text-left hidden lg:block leading-tight">
+                  <p className="text-[11px] font-semibold text-slate-800 truncate max-w-[140px]" title={currentUser.name}>
+                    {currentUser.name}
+                  </p>
+                  <p className="text-[10px] text-slate-500 font-mono truncate max-w-[140px]" title={currentUser.email}>
+                    {currentUser.email}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Logout Button */}
+            <button
+              onClick={handleLogout}
+              title="Sign Out of Session"
+              aria-label="Sign Out"
+              className="flex items-center gap-1.5 px-2 py-1 rounded text-xs font-medium text-slate-600 hover:text-red-700 hover:bg-red-50 border border-transparent hover:border-red-200 transition-colors cursor-pointer"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
         </header>

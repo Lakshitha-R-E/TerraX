@@ -1,7 +1,13 @@
 import { create } from 'zustand';
-import type { Property, Parcel, Building, LayerVisibility } from '../types';
+import type { Property, Parcel, Building, LayerVisibility, AuthUser, UserRole, LoginCredentials } from '../types';
+import { authenticate, loadAuthSession, saveAuthSession, clearAuthSession } from '../services/auth';
 
 interface AppState {
+  // Auth state
+  isAuthenticated: boolean;
+  currentUser: AuthUser | null;
+  userRole: UserRole;
+
   // Selected entities
   selectedProperty: Property | null;
   selectedParcel: Parcel | null;
@@ -16,9 +22,10 @@ interface AppState {
   sidebarOpen: boolean;
   activeTab: string;
   searchQuery: string;
-  userRole: 'Admin' | 'Surveyor' | 'Authority Viewer';
   
   // Actions
+  login: (credentials: LoginCredentials, rememberMe: boolean) => Promise<{ success: boolean; error?: string }>;
+  logout: () => void;
   setSelectedProperty: (p: Property | null) => void;
   setSelectedParcel: (p: Parcel | null) => void;
   setSelectedBuilding: (b: Building | null) => void;
@@ -28,10 +35,17 @@ interface AppState {
   setSidebarOpen: (open: boolean) => void;
   setActiveTab: (tab: string) => void;
   setSearchQuery: (q: string) => void;
-  setUserRole: (role: 'Admin' | 'Surveyor' | 'Authority Viewer') => void;
+  setUserRole: (role: UserRole) => void;
 }
 
-export const useAppStore = create<AppState>((set) => ({
+const initialSession = loadAuthSession();
+
+export const useAppStore = create<AppState>((set, get) => ({
+  // Initial Auth from stored session
+  isAuthenticated: !!initialSession,
+  currentUser: initialSession,
+  userRole: initialSession?.role || 'Admin',
+
   selectedProperty: null,
   selectedParcel: null,
   selectedBuilding: null,
@@ -57,7 +71,32 @@ export const useAppStore = create<AppState>((set) => ({
   sidebarOpen: true,
   activeTab: 'overview',
   searchQuery: '',
-  userRole: 'Admin',
+
+  login: async (credentials: LoginCredentials, rememberMe: boolean) => {
+    const result = await authenticate(credentials);
+    if (result.success && result.user) {
+      saveAuthSession(result.user, rememberMe);
+      set({
+        isAuthenticated: true,
+        currentUser: result.user,
+        userRole: result.user.role,
+      });
+      return { success: true };
+    }
+    return { success: false, error: result.error || 'Authentication failed' };
+  },
+
+  logout: () => {
+    clearAuthSession();
+    set({
+      isAuthenticated: false,
+      currentUser: null,
+      selectedProperty: null,
+      selectedParcel: null,
+      selectedBuilding: null,
+      selectedFloor: null,
+    });
+  },
   
   setSelectedProperty: (p) => set({ selectedProperty: p }),
   setSelectedParcel: (p) => set({ selectedParcel: p }),
@@ -70,5 +109,18 @@ export const useAppStore = create<AppState>((set) => ({
   setSidebarOpen: (open) => set({ sidebarOpen: open }),
   setActiveTab: (tab) => set({ activeTab: tab }),
   setSearchQuery: (q) => set({ searchQuery: q }),
-  setUserRole: (role) => set({ userRole: role }),
+  setUserRole: (role) => {
+    const { currentUser } = get();
+    if (currentUser) {
+      const updatedUser: AuthUser = { ...currentUser, role };
+      set({ userRole: role, currentUser: updatedUser });
+      // update persisted session if currently logged in
+      const session = loadAuthSession();
+      if (session) {
+        saveAuthSession(updatedUser, true);
+      }
+    } else {
+      set({ userRole: role });
+    }
+  },
 }));
