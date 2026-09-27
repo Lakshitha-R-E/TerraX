@@ -7,16 +7,31 @@ import json
 import os
 from datetime import datetime
 
+import tempfile
+import shutil
+
 ORIGINAL_DB_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "cadastral.db")
 
 if os.environ.get("VERCEL") or os.environ.get("AWS_LAMBDA_FUNCTION_NAME"):
-    DB_PATH = "/tmp/cadastral.db"
-    if not os.path.exists(DB_PATH) and os.path.exists(ORIGINAL_DB_PATH):
-        try:
-            import shutil
-            shutil.copyfile(ORIGINAL_DB_PATH, DB_PATH)
-        except Exception as e:
-            print(f"[WARN] Failed to copy SQLite database to /tmp: {e}")
+    tmp_dir = tempfile.gettempdir()
+    DB_PATH = os.path.join(tmp_dir, "cadastral.db")
+    if not os.path.exists(DB_PATH):
+        candidate_sources = [
+            ORIGINAL_DB_PATH,
+            os.path.join(os.path.dirname(__file__), "..", "cadastral.db"),
+            os.path.join(os.getcwd(), "backend", "data", "cadastral.db"),
+            os.path.join(os.getcwd(), "data", "cadastral.db"),
+            "/var/task/data/cadastral.db",
+            "/var/task/backend/data/cadastral.db",
+        ]
+        for src in candidate_sources:
+            if os.path.exists(src):
+                try:
+                    shutil.copyfile(src, DB_PATH)
+                    os.chmod(DB_PATH, 0o666)
+                    break
+                except Exception as e:
+                    print(f"[WARN] Failed to copy {src} to {DB_PATH}: {e}")
 else:
     DB_PATH = ORIGINAL_DB_PATH
 
@@ -28,7 +43,10 @@ def get_db():
         conn.execute("PRAGMA journal_mode = WAL")
     except Exception:
         pass
-    conn.execute("PRAGMA busy_timeout = 30000")
+    try:
+        conn.execute("PRAGMA busy_timeout = 30000")
+    except Exception:
+        pass
     return conn
 
 

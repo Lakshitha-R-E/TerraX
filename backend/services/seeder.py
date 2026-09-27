@@ -12,7 +12,14 @@ from datetime import datetime, timedelta
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-DB_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "cadastral.db")
+try:
+    from models.database import DB_PATH, get_db
+except Exception:
+    DB_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "cadastral.db")
+    def get_db():
+        conn = sqlite3.connect(DB_PATH, timeout=60.0)
+        conn.row_factory = sqlite3.Row
+        return conn
 
 # Demo coordinate base — Adyar, Chennai
 BASE_LAT = 13.0067
@@ -20,8 +27,7 @@ BASE_LNG = 80.2571
 
 
 def seed_all():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
+    conn = get_db()
     c = conn.cursor()
 
     # ─── PARCELS ─────────────────────────────────────────────────────────────
@@ -690,17 +696,24 @@ def seed_all():
             :last_updated,:is_demo,:metadata)
         """, ds)
 
+    try:
         conn.commit()
         print(f"[OK] Demo data seeded: {len(parcels)} parcels, {len(buildings)} buildings, "
             f"{len(floors)} floors, {len(properties)} properties")
+    except Exception as e:
+        print(f"[WARN] Seeding error or already seeded: {e}")
+    finally:
         conn.close()
 
 
 def ensure_property_history():
     """Backfill property-specific baseline history and the primary Adyar timeline."""
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
-    properties = conn.execute("SELECT * FROM properties WHERE status='active'").fetchall()
+    try:
+        conn = get_db()
+        properties = conn.execute("SELECT * FROM properties WHERE status='active'").fetchall()
+    except Exception as e:
+        print(f"[WARN] Property history query error: {e}")
+        return
 
     for prop_row in properties:
         prop = dict(prop_row)
@@ -837,8 +850,12 @@ def ensure_property_history():
                 ),
             )
 
-    conn.commit()
-    conn.close()
+    try:
+        conn.commit()
+    except Exception as e:
+        print(f"[WARN] Property history backfill issue: {e}")
+    finally:
+        conn.close()
 
 
 if __name__ == "__main__":

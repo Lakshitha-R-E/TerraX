@@ -74,15 +74,19 @@ async def startup():
             os.makedirs(db_dir, exist_ok=True)
     except Exception:
         pass
-    init_db()
-    from models.database import get_db
-    conn = get_db()
-    row = conn.execute("SELECT COUNT(*) as cnt FROM parcels").fetchone()
-    conn.close()
-    if row["cnt"] == 0:
-        seed_all()
-    ensure_property_history()
-    print("[OK] 3D ULPIN System API ready — Study Region: Adyar, Chennai, Tamil Nadu")
+
+    try:
+        init_db()
+        from models.database import get_db
+        conn = get_db()
+        row = conn.execute("SELECT COUNT(*) as cnt FROM parcels").fetchone()
+        conn.close()
+        if row and row["cnt"] == 0:
+            seed_all()
+        ensure_property_history()
+        print("[OK] 3D ULPIN System API ready — Study Region: Adyar, Chennai, Tamil Nadu")
+    except Exception as e:
+        print(f"[WARN] Database initialization deferred: {e}")
 
 
 @app.get("/api/health")
@@ -102,6 +106,16 @@ def health():
         ],
         "demo_data_label": "PROJECT_DEMONSTRATION"
     }
+
+
+@app.get("/health")
+def health_alt():
+    return health()
+
+
+@app.get("/")
+def root():
+    return health()
 
 
 @app.get("/api/stats")
