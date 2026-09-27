@@ -1,0 +1,70 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "source": "Prototype Elevated Infrastructure Layer",
+    "description": "Above-ground transport infrastructure with vertical clearances."
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INF-EL001",
+        "parcel_id": "P005",
+        "infra_type": "Metro Rail Corridor",
+        "asset_id": "MRTS-L2-ADY-001",
+        "height_m": 8.0,
+        "length_m": 280.0,
+        "status": "active",
+        "conflict_status": "none",
+        "metadata": {
+          "authority": "CMRL (Demo)",
+          "clearance_m": 5.5,
+          "line": "Line 2"
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.2596,
+            13.0125
+          ],
+          [
+            80.2612,
+            13.0125
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INF-EL002",
+        "parcel_id": "P002",
+        "infra_type": "Elevated Road",
+        "asset_id": "NHAI-BR-CHN-001",
+        "height_m": 5.5,
+        "length_m": 150.0,
+        "status": "active",
+        "conflict_status": "warning",
+        "metadata": {
+          "authority": "NHAI (Demo)",
+          "width_m": 8.0
+        }
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.2576,
+            13.0077
+          ],
+          [
+            80.2586,
+            13.0077
+          ]
+        ]
+      }
+    }
+  ]
+}

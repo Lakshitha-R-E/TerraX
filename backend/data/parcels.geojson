@@ -1,0 +1,219 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "source": "State Cadastral Survey (Demo Vector Layer)",
+    "zone": "Adyar Cadastral Ward 172"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "P001",
+      "properties": {
+        "id": "P001",
+        "parcel_number": "TN-CHN-ADY-P001",
+        "district": "Chennai",
+        "state": "Tamil Nadu",
+        "area_sqm": 2400.0,
+        "land_use": "Residential",
+        "centroid_lat": 13.0067,
+        "centroid_lng": 80.2571,
+        "status": "active"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.2565,
+              13.007
+            ],
+            [
+              80.2575,
+              13.007
+            ],
+            [
+              80.2575,
+              13.0064
+            ],
+            [
+              80.2565,
+              13.0064
+            ],
+            [
+              80.2565,
+              13.007
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "P002",
+      "properties": {
+        "id": "P002",
+        "parcel_number": "TN-CHN-ADY-P002",
+        "district": "Chennai",
+        "state": "Tamil Nadu",
+        "area_sqm": 1800.0,
+        "land_use": "Commercial",
+        "centroid_lat": 13.0087,
+        "centroid_lng": 80.2591,
+        "status": "active"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.2577,
+              13.008
+            ],
+            [
+              80.2585,
+              13.008
+            ],
+            [
+              80.2585,
+              13.0073
+            ],
+            [
+              80.2577,
+              13.0073
+            ],
+            [
+              80.2577,
+              13.008
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "P003",
+      "properties": {
+        "id": "P003",
+        "parcel_number": "TN-CHN-ADY-P003",
+        "district": "Chennai",
+        "state": "Tamil Nadu",
+        "area_sqm": 3200.0,
+        "land_use": "Mixed-Use",
+        "centroid_lat": 13.0037,
+        "centroid_lng": 80.2601,
+        "status": "active"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.2574,
+              13.004
+            ],
+            [
+              80.2586,
+              13.004
+            ],
+            [
+              80.2586,
+              13.003
+            ],
+            [
+              80.2574,
+              13.003
+            ],
+            [
+              80.2574,
+              13.004
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "P004",
+      "properties": {
+        "id": "P004",
+        "parcel_number": "TN-CHN-ADY-P004",
+        "district": "Chennai",
+        "state": "Tamil Nadu",
+        "area_sqm": 1500.0,
+        "land_use": "Residential",
+        "centroid_lat": 13.0117,
+        "centroid_lng": 80.2541,
+        "status": "active"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.254,
+              13.0115
+            ],
+            [
+              80.255,
+              13.0115
+            ],
+            [
+              80.255,
+              13.0108
+            ],
+            [
+              80.254,
+              13.0108
+            ],
+            [
+              80.254,
+              13.0115
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "P005",
+      "properties": {
+        "id": "P005",
+        "parcel_number": "TN-CHN-ADY-P005",
+        "district": "Chennai",
+        "state": "Tamil Nadu",
+        "area_sqm": 2800.0,
+        "land_use": "Infrastructure",
+        "centroid_lat": 13.0137,
+        "centroid_lng": 80.2621,
+        "status": "active"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.2598,
+              13.013
+            ],
+            [
+              80.261,
+              13.013
+            ],
+            [
+              80.261,
+              13.012
+            ],
+            [
+              80.2598,
+              13.012
+            ],
+            [
+              80.2598,
+              13.013
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

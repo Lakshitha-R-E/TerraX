@@ -1,0 +1,51 @@
+3D ULPIN System — Final Patch v2
+=================================
+Copy each file into your `ps2` project at the SAME relative path, overwriting the original:
+
+  backend/routers/ulpins.py        -> state/district code fix (TN/CHN, not TA/CHE)
+  backend/routers/properties.py    -> fixed missing floor_id query filter
+  backend/routers/validation.py    -> (1) fixed duplicate-issue bug on repeated
+                                        "Run Topology Validation" clicks
+                                      -> (2) NEW: Resolve now actually recalculates
+                                        the intruding unit's min_z/max_z instead of
+                                        just flipping a "resolved" flag, so a second
+                                        Run Topology Validation genuinely comes back
+                                        clean instead of re-flagging the same overlap
+  backend/requirements.txt          -> pinned Python dependencies
+  backend/cadastral.db              -> place at backend/data/cadastral.db (note the
+                                        different path vs this patch folder).
+                                        Cleaned DB + the U-301/U-302 conflict, now
+                                        seeded as UNRESOLVED so the Validation Center
+                                        shows "VERTICAL OVERLAP DETECTED" on first load.
+
+  frontend/src/services/api.ts      -> resolveValidation() now returns the
+                                        `recalculated` geometry-change details
+  frontend/src/pages/ValidationCenter.tsx -> "Resolve" now shows the actual
+                                        before/after z-boundary numbers, so judges
+                                        see the recalculation happen, not just a
+                                        status flip
+
+Backup your current backend/data/cadastral.db before copying the new one in.
+
+--- Verified in this environment (no live server run — see notes below) ---
+- `python3 -m py_compile` across the entire backend/: all files compile clean.
+- `npx tsc -b` across the entire frontend/: zero TypeScript errors.
+- Simulated the exact detect -> resolve -> re-validate cycle against a scratch
+  copy of the patched database using the same overlap-check arithmetic the
+  backend uses:
+    U-301 z=[12.2,15.2]  U-302 z=[14.2,15.2]  -> overlap=True, 1.0m
+    resolve() recalculates U-302 -> z=[15.25,16.25]
+    re-check -> overlap=False  (clean)
+- Confirmed PROP-DEMO-003 (Adyar Towers Block A, Floor 3, Unit U-301) already
+  carries ULPIN 3D-ULPIN-DEMO-TN-CHN-001-001-F03-U-301-fa19d1 in the patched db.
+
+Not verified: an actual live run of `uvicorn` + the browser UI. This sandbox
+has no network access (can't pip install fastapi/uvicorn/shapely/pyproj) and
+frontend/node_modules in your zip were built for Windows (win32-x64-msvc
+native binding only), so `vite build` can't run here either — that's an
+environment limitation, not a code issue. Please do a real run on your machine
+per the commands below and tell me the exact error if anything breaks.
+
+Run:
+  cd backend && pip install -r requirements.txt && python -m uvicorn main:app --reload
+  cd frontend && npm run dev

@@ -1,0 +1,10 @@
+fastapi==0.141.1
+uvicorn==0.54.0
+pydantic==2.13.5
+python-multipart==0.0.32
+numpy==2.4.4
+shapely==2.1.2
+pyproj==3.8.0
+laspy==2.7.0
+pypdf==5.9.0
+rasterio==1.5.1

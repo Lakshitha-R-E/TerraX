@@ -1,0 +1,236 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "source": "Microsoft Global ML Building Footprints",
+    "region": "Chennai, Tamil Nadu (Adyar Demo Sector)",
+    "crs": "EPSG:4326",
+    "description": "Building polygons extracted from high-resolution satellite imagery using deep learning models."
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "MS-BLD-001",
+      "properties": {
+        "id": "B001",
+        "building_number": "BLD-001",
+        "name": "Adyar Towers Block A",
+        "parcel_id": "P001",
+        "source": "Microsoft ML Building Footprints",
+        "confidence": 0.94,
+        "building_type": "Residential Apartment",
+        "total_floors": 5,
+        "floor_height": 3.0,
+        "ground_elevation": 6.2,
+        "height_m": 15.0,
+        "dem_source": "Cartosat-1 DEM \u2014 Bhuvan/ISRO"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.2566,
+              13.0069
+            ],
+            [
+              80.2572,
+              13.0069
+            ],
+            [
+              80.2572,
+              13.0065
+            ],
+            [
+              80.2566,
+              13.0065
+            ],
+            [
+              80.2566,
+              13.0069
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "MS-BLD-002",
+      "properties": {
+        "id": "B002",
+        "building_number": "BLD-002",
+        "name": "Adyar Towers Block B",
+        "parcel_id": "P001",
+        "source": "Microsoft ML Building Footprints",
+        "confidence": 0.91,
+        "building_type": "Residential Apartment",
+        "total_floors": 3,
+        "floor_height": 3.0,
+        "ground_elevation": 6.3,
+        "height_m": 9.0,
+        "dem_source": "Cartosat-1 DEM \u2014 Bhuvan/ISRO"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.2573,
+              13.0068
+            ],
+            [
+              80.2574,
+              13.0068
+            ],
+            [
+              80.2574,
+              13.0065
+            ],
+            [
+              80.2573,
+              13.0065
+            ],
+            [
+              80.2573,
+              13.0068
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "MS-BLD-003",
+      "properties": {
+        "id": "B003",
+        "building_number": "BLD-003",
+        "name": "Adyar Commercial Plaza",
+        "parcel_id": "P002",
+        "source": "Microsoft ML Building Footprints",
+        "confidence": 0.96,
+        "building_type": "Commercial",
+        "total_floors": 7,
+        "floor_height": 4.0,
+        "ground_elevation": 6.0,
+        "height_m": 28.0,
+        "dem_source": "Cartosat-1 DEM \u2014 Bhuvan/ISRO"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.2578,
+              13.0079
+            ],
+            [
+              80.2584,
+              13.0079
+            ],
+            [
+              80.2584,
+              13.0074
+            ],
+            [
+              80.2578,
+              13.0074
+            ],
+            [
+              80.2578,
+              13.0079
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "MS-BLD-004",
+      "properties": {
+        "id": "B004",
+        "building_number": "BLD-004",
+        "name": "Marina Heights",
+        "parcel_id": "P003",
+        "source": "Microsoft ML Building Footprints",
+        "confidence": 0.95,
+        "building_type": "Mixed-Use",
+        "total_floors": 10,
+        "floor_height": 3.5,
+        "ground_elevation": 5.8,
+        "height_m": 35.0,
+        "dem_source": "Cartosat-1 DEM \u2014 Bhuvan/ISRO"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.2575,
+              13.0038
+            ],
+            [
+              80.2584,
+              13.0038
+            ],
+            [
+              80.2584,
+              13.0032
+            ],
+            [
+              80.2575,
+              13.0032
+            ],
+            [
+              80.2575,
+              13.0038
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "MS-BLD-005",
+      "properties": {
+        "id": "B005",
+        "building_number": "BLD-005",
+        "name": "Velachery Villa Complex",
+        "parcel_id": "P004",
+        "source": "Microsoft ML Building Footprints",
+        "confidence": 0.89,
+        "building_type": "Residential",
+        "total_floors": 4,
+        "floor_height": 3.0,
+        "ground_elevation": 6.5,
+        "height_m": 12.0,
+        "dem_source": "Cartosat-1 DEM \u2014 Bhuvan/ISRO"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.2541,
+              13.0114
+            ],
+            [
+              80.2548,
+              13.0114
+            ],
+            [
+              80.2548,
+              13.0109
+            ],
+            [
+              80.2541,
+              13.0109
+            ],
+            [
+              80.2541,
+              13.0114
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

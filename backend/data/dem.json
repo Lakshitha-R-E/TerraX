@@ -1,0 +1,42 @@
+{
+  "source": "Cartosat-1 DEM \u2014 Bhuvan/ISRO",
+  "satellite": "Cartosat-1",
+  "sensor": "PAN Fore / Aft Stereo",
+  "spatial_resolution_m": 2.5,
+  "vertical_accuracy_m": 1.5,
+  "datum": "WGS 84 / EGM96 Geoid",
+  "region": "Chennai Metropolitan Area",
+  "elevation_grid": [
+    {
+      "lat": 13.0067,
+      "lng": 80.2571,
+      "elevation_m": 6.2,
+      "feature": "Adyar Towers P001"
+    },
+    {
+      "lat": 13.0087,
+      "lng": 80.2591,
+      "elevation_m": 6.0,
+      "feature": "Commercial Plaza P002"
+    },
+    {
+      "lat": 13.0037,
+      "lng": 80.2601,
+      "elevation_m": 5.8,
+      "feature": "Marina Heights P003"
+    },
+    {
+      "lat": 13.0117,
+      "lng": 80.2541,
+      "elevation_m": 6.5,
+      "feature": "Velachery Villa P004"
+    },
+    {
+      "lat": 13.0137,
+      "lng": 80.2621,
+      "elevation_m": 4.8,
+      "feature": "Metro Corridor P005"
+    }
+  ],
+  "mean_sea_level_reference": "Chennai Port Tide Gauge Datum"
+}

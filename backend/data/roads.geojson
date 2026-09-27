@@ -1,0 +1,92 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "source": "OpenStreetMap Contributors",
+    "layer": "highway",
+    "region": "Chennai, Tamil Nadu"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sardar Patel Road",
+        "highway": "primary",
+        "lanes": 4,
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.253,
+            13.0085
+          ],
+          [
+            80.256,
+            13.0078
+          ],
+          [
+            80.259,
+            13.007
+          ],
+          [
+            80.262,
+            13.0062
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Lattice Bridge Road (LB Road)",
+        "highway": "secondary",
+        "lanes": 2,
+        "surface": "asphalt"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.257,
+            13.012
+          ],
+          [
+            80.2572,
+            13.008
+          ],
+          [
+            80.2575,
+            13.004
+          ],
+          [
+            80.2577,
+            13.001
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Gandhi Nagar 2nd Main Road",
+        "highway": "residential",
+        "lanes": 2,
+        "surface": "paved"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [
+            80.2555,
+            13.0065
+          ],
+          [
+            80.258,
+            13.0065
+          ]
+        ]
+      }
+    }
+  ]
+}

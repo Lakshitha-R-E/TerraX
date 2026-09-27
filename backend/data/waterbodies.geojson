@@ -1,0 +1,45 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "source": "OpenStreetMap Contributors",
+    "layer": "waterway / natural",
+    "region": "Adyar River Estuary, Chennai"
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Adyar River Channel",
+        "waterway": "river",
+        "buffer_zone_m": 50
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.252,
+              13.014
+            ],
+            [
+              80.263,
+              13.0145
+            ],
+            [
+              80.263,
+              13.0135
+            ],
+            [
+              80.252,
+              13.013
+            ],
+            [
+              80.252,
+              13.014
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

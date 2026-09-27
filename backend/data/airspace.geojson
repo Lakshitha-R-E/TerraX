@@ -1,0 +1,49 @@
+{
+  "type": "FeatureCollection",
+  "metadata": {
+    "source": "Prototype Air-Space Right of Way",
+    "description": "Volumetric air-rights parcels above physical structures."
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "PROP-B005-AS-001",
+        "parcel_id": "P005",
+        "unit_number": "AS-001",
+        "property_type": "Air-Space Volume",
+        "min_z": 8.0,
+        "max_z": 14.0,
+        "area_sqm": 1200.0,
+        "volume_cbm": 7200.0
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              80.2599,
+              13.0129
+            ],
+            [
+              80.2608,
+              13.0129
+            ],
+            [
+              80.2608,
+              13.0121
+            ],
+            [
+              80.2599,
+              13.0121
+            ],
+            [
+              80.2599,
+              13.0129
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

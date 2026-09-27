@@ -1,0 +1,87 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * { box-sizing: border-box; }
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #f8fafc;
+    color: #0f172a;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #f1f5f9; }
+  ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+}
+
+@layer components {
+  .card {
+    @apply bg-white border border-slate-200 rounded-lg p-4 shadow-sm;
+  }
+  .card-header {
+    @apply text-xs font-semibold text-slate-600 uppercase tracking-wider mb-3;
+  }
+  .btn-primary {
+    @apply bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white px-3.5 py-1.5 rounded-md text-xs font-medium transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-secondary {
+    @apply bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 border border-slate-300 px-3.5 py-1.5 rounded-md text-xs font-medium transition-colors shadow-sm disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+  .btn-danger {
+    @apply bg-red-600 hover:bg-red-700 text-white px-3.5 py-1.5 rounded-md text-xs font-medium transition-colors shadow-sm;
+  }
+  .badge-valid {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200;
+  }
+  .badge-warning {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-amber-50 text-amber-800 border border-amber-200;
+  }
+  .badge-conflict {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-red-50 text-red-700 border border-red-200;
+  }
+  .badge-demo {
+    @apply inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-indigo-50 text-indigo-700 border border-indigo-200;
+  }
+  .stat-card {
+    @apply bg-white border border-slate-200 rounded-lg p-4 shadow-sm flex flex-col justify-between;
+  }
+  .nav-item {
+    @apply flex items-center gap-2.5 px-3 py-2 rounded-md text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors cursor-pointer;
+  }
+  .nav-item.active {
+    @apply bg-blue-50 text-blue-700 font-semibold border-l-2 border-blue-600;
+  }
+  .form-input {
+    @apply bg-white border border-slate-300 rounded-md px-3 py-1.5 text-xs text-slate-800 w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 placeholder:text-slate-400;
+  }
+  .form-select {
+    @apply bg-white border border-slate-300 rounded-md px-3 py-1.5 text-xs text-slate-800 w-full focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500;
+  }
+  .form-label {
+    @apply block text-[11px] font-medium text-slate-600 mb-1;
+  }
+  .tab-btn {
+    @apply px-3.5 py-1.5 text-xs font-medium text-slate-500 border-b-2 border-transparent hover:text-slate-800 hover:border-slate-300 transition-colors;
+  }
+  .tab-btn.active {
+    @apply text-blue-600 border-blue-600 font-semibold;
+  }
+}
+
+/* Cesium viewer overrides for crisp light theme */
+.cesium-widget-credits { display: none !important; }
+.cesium-viewer-toolbar { top: 10px !important; right: 10px !important; }
+
+/* Printable media stylesheet */
+@media print {
+  body { background-color: #ffffff !important; color: #000000 !important; }
+  aside, header, .no-print { display: none !important; }
+  main { overflow: visible !important; height: auto !important; padding: 0 !important; }
+  .card { border: 1px solid #94a3b8 !important; box-shadow: none !important; }
+}

@@ -1,0 +1,191 @@
+{
+  "metadata": {
+    "source": "Microsoft Global ML Building Footprints",
+    "coverage": "Statewide Tamil Nadu / Greater Chennai Region",
+    "total_indexed_buildings": 485261,
+    "crs": "EPSG:4326",
+    "license": "CDLA Permissive 2.0",
+    "districts": [
+      {
+        "id": "chennai",
+        "name": "Chennai",
+        "centroid": [
+          80.2571,
+          13.0067
+        ],
+        "bbox": [
+          80.14,
+          12.83,
+          80.33,
+          13.24
+        ],
+        "description": "Metropolitan Region \u2014 Adyar, Velachery, T.Nagar, Mylapore, Anna Nagar"
+      },
+      {
+        "id": "coimbatore",
+        "name": "Coimbatore",
+        "centroid": [
+          76.9558,
+          11.0168
+        ],
+        "bbox": [
+          76.85,
+          10.9,
+          77.08,
+          11.12
+        ],
+        "description": "Western Industrial District \u2014 Gandhipuram, Peelamedu, RS Puram"
+      },
+      {
+        "id": "madurai",
+        "name": "Madurai",
+        "centroid": [
+          78.1198,
+          9.9252
+        ],
+        "bbox": [
+          78.02,
+          9.83,
+          78.22,
+          10.02
+        ],
+        "description": "Southern Cultural District \u2014 Meenakshi Zone, KK Nagar, Tallakulam"
+      },
+      {
+        "id": "tiruchirappalli",
+        "name": "Tiruchirappalli (Trichy)",
+        "centroid": [
+          78.7047,
+          10.7905
+        ],
+        "bbox": [
+          78.61,
+          10.7,
+          78.8,
+          10.88
+        ],
+        "description": "Central Belt District \u2014 Srirangam, Thillai Nagar, BHEL Town"
+      },
+      {
+        "id": "salem",
+        "name": "Salem",
+        "centroid": [
+          78.146,
+          11.6643
+        ],
+        "bbox": [
+          78.05,
+          11.58,
+          78.24,
+          11.75
+        ],
+        "description": "North-Western Industrial Zone \u2014 Fairlands, Suramangalam"
+      },
+      {
+        "id": "tiruppur",
+        "name": "Tiruppur",
+        "centroid": [
+          77.3411,
+          11.1085
+        ],
+        "bbox": [
+          77.25,
+          11.02,
+          77.43,
+          11.19
+        ],
+        "description": "Textile Hub District \u2014 Avinashi Road, Kumar Nagar"
+      },
+      {
+        "id": "erode",
+        "name": "Erode",
+        "centroid": [
+          77.7172,
+          11.341
+        ],
+        "bbox": [
+          77.62,
+          11.25,
+          77.81,
+          11.43
+        ],
+        "description": "Western Agricultural/Industrial Hub \u2014 Perundurai, Brough Road"
+      },
+      {
+        "id": "vellore",
+        "name": "Vellore",
+        "centroid": [
+          79.1325,
+          12.9165
+        ],
+        "bbox": [
+          79.04,
+          12.83,
+          79.22,
+          13.0
+        ],
+        "description": "Northern District \u2014 Katpadi, Fort Zone, Sathuvachari"
+      },
+      {
+        "id": "tirunelveli",
+        "name": "Tirunelveli",
+        "centroid": [
+          77.7567,
+          8.7139
+        ],
+        "bbox": [
+          77.66,
+          8.62,
+          77.85,
+          8.8
+        ],
+        "description": "Southern Deep Belt \u2014 Palayamkottai, Junction Area"
+      },
+      {
+        "id": "thoothukudi",
+        "name": "Thoothukudi (Tuticorin)",
+        "centroid": [
+          78.1348,
+          8.7642
+        ],
+        "bbox": [
+          78.04,
+          8.68,
+          78.23,
+          8.85
+        ],
+        "description": "Port & Coastal District \u2014 Harbor Zone, Pearl City Sector"
+      },
+      {
+        "id": "thanjavur",
+        "name": "Thanjavur",
+        "centroid": [
+          79.1378,
+          10.787
+        ],
+        "bbox": [
+          79.04,
+          10.7,
+          79.23,
+          10.87
+        ],
+        "description": "Delta District \u2014 Big Temple Zone, Medical College Road"
+      },
+      {
+        "id": "kanchipuram",
+        "name": "Kanchipuram",
+        "centroid": [
+          79.7036,
+          12.8342
+        ],
+        "bbox": [
+          79.6,
+          12.74,
+          79.8,
+          12.92
+        ],
+        "description": "Silk & Heritage Sector \u2014 Temple District Zone"
+      }
+    ]
+  }
+}
