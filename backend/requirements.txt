@@ -8,4 +8,4 @@ pyproj>=3.6.0
 laspy>=2.7.0
 pypdf>=5.0.0
 rasterio>=1.4.0
-
+opencv-python-headless>=4.10.0
