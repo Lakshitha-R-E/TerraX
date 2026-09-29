@@ -16,16 +16,30 @@ api.interceptors.response.use(
   }
 );
 
+function normalizeArray<T>(data: any, key?: string): T[] {
+  if (Array.isArray(data)) return data;
+  if (!data || typeof data !== 'object') return [];
+  if (key && Array.isArray(data[key])) return data[key];
+  if (Array.isArray(data.data)) return data.data;
+  if (Array.isArray(data.results)) return data.results;
+  if (Array.isArray(data.items)) return data.items;
+  return [];
+}
+
 // ─── Stats & Activity ─────────────────────────────────────────────────────────
 export const fetchStats = (): Promise<Stats> =>
   api.get('/stats').then(r => r.data);
 
 export const fetchActivity = (): Promise<{ activities: Activity[] }> =>
-  api.get('/activity').then(r => r.data);
+  api.get('/activity').then(r => {
+    const d = r.data;
+    if (Array.isArray(d)) return { activities: d };
+    return { activities: normalizeArray<Activity>(d?.activities) };
+  });
 
 // ─── Parcels ──────────────────────────────────────────────────────────────────
 export const fetchParcels = (district?: string): Promise<Parcel[]> =>
-  api.get('/parcels', { params: district ? { district } : {} }).then(r => r.data);
+  api.get('/parcels', { params: district ? { district } : {} }).then(r => normalizeArray<Parcel>(r.data, 'parcels'));
 
 export const fetchParcel = (id: string): Promise<any> =>
   api.get(`/parcels/${id}`).then(r => r.data);
@@ -35,7 +49,7 @@ export const createParcel = (data: any): Promise<any> =>
 
 // ─── Buildings ────────────────────────────────────────────────────────────────
 export const fetchBuildings = (parcelId?: string): Promise<Building[]> =>
-  api.get('/buildings', { params: parcelId ? { parcel_id: parcelId } : {} }).then(r => r.data);
+  api.get('/buildings', { params: parcelId ? { parcel_id: parcelId } : {} }).then(r => normalizeArray<Building>(r.data, 'buildings'));
 
 export const fetchBuilding = (id: string): Promise<any> =>
   api.get(`/buildings/${id}`).then(r => r.data);
@@ -44,18 +58,27 @@ export const createBuilding = (data: any): Promise<any> =>
   api.post('/buildings', data).then(r => r.data);
 
 export const fetchMicrosoftBuildings = (): Promise<import('../types').MicrosoftBuildingsResponse> =>
-  api.get('/buildings/microsoft').then(r => r.data);
+  api.get('/buildings/microsoft').then(r => {
+    const d = r.data || {};
+    return { ...d, features: normalizeArray(d.features) };
+  });
 
 export const fetchSpatialMicrosoftBuildings = (
   minLon: number, minLat: number, maxLon: number, maxLat: number, districtId?: string, limit = 600
 ): Promise<import('../types').MicrosoftBuildingsResponse> =>
   api.get('/buildings/microsoft/spatial', {
     params: { min_lon: minLon, min_lat: minLat, max_lon: maxLon, max_lat: maxLat, district_id: districtId, limit }
-  }).then(r => r.data);
+  }).then(r => {
+    const d = r.data || {};
+    return { ...d, features: normalizeArray(d.features) };
+  });
 
 export const fetchTamilNaduDistricts = (): Promise<{
   districts: Array<{ id: string; name: string; centroid: [number, number]; bbox: [number, number, number, number]; description: string }>;
-}> => api.get('/buildings/microsoft/districts').then(r => r.data);
+}> => api.get('/buildings/microsoft/districts').then(r => {
+  const d = r.data;
+  return { districts: Array.isArray(d) ? d : normalizeArray<any>(d?.districts) };
+});
 
 export const fetchMicrosoftBuildingStats = (): Promise<import('../types').DataQualityStats> =>
   api.get('/buildings/microsoft/stats').then(r => r.data);
@@ -91,7 +114,7 @@ export const fetchOwnershipStatus = (): Promise<any> =>
 
 // ─── Floors ───────────────────────────────────────────────────────────────────
 export const fetchFloors = (buildingId?: string): Promise<Floor[]> =>
-  api.get('/floors', { params: buildingId ? { building_id: buildingId } : {} }).then(r => r.data);
+  api.get('/floors', { params: buildingId ? { building_id: buildingId } : {} }).then(r => normalizeArray<Floor>(r.data, 'floors'));
 
 export const createFloor = (data: any): Promise<any> =>
   api.post('/floors', data).then(r => r.data);
@@ -103,7 +126,7 @@ export const fetchProperties = (params?: {
   floor_id?: string;
   property_type?: string;
 }): Promise<Property[]> =>
-  api.get('/properties', { params }).then(r => r.data);
+  api.get('/properties', { params }).then(r => normalizeArray<Property>(r.data, 'properties'));
 
 export const fetchProperty = (id: string): Promise<any> =>
   api.get(`/properties/${id}`).then(r => r.data);
@@ -113,7 +136,7 @@ export const createProperty = (data: Partial<Property>): Promise<Property> =>
 
 // ─── ULPINs ───────────────────────────────────────────────────────────────────
 export const fetchULPINs = (): Promise<ULPIN[]> =>
-  api.get('/ulpins').then(r => r.data);
+  api.get('/ulpins').then(r => normalizeArray<ULPIN>(r.data, 'ulpins'));
 
 export const fetchULPIN = (code: string): Promise<ULPIN> =>
   api.get(`/ulpins/${code}`).then(r => r.data);
@@ -123,14 +146,14 @@ export const generateULPIN = (req: ULPINGenerateRequest): Promise<ULPIN & { ulpi
 
 // ─── Rights ───────────────────────────────────────────────────────────────────
 export const fetchRights = (propertyId?: string, parcelId?: string): Promise<any[]> =>
-  api.get('/rights', { params: { property_id: propertyId, parcel_id: parcelId } }).then(r => r.data);
+  api.get('/rights', { params: { property_id: propertyId, parcel_id: parcelId } }).then(r => normalizeArray<any>(r.data, 'rights'));
 
 export const createRights = (data: any): Promise<any> =>
   api.post('/rights', data).then(r => r.data);
 
 // ─── Utilities ────────────────────────────────────────────────────────────────
 export const fetchUtilities = (parcelId?: string, utilityType?: string): Promise<Utility[]> =>
-  api.get('/utilities', { params: { parcel_id: parcelId, utility_type: utilityType } }).then(r => r.data);
+  api.get('/utilities', { params: { parcel_id: parcelId, utility_type: utilityType } }).then(r => normalizeArray<Utility>(r.data, 'utilities'));
 
 export const fetchUtilityAffectedProperties = (utilityId: string): Promise<any> =>
   api.get(`/utilities/${utilityId}/affected-properties`).then(r => r.data);
@@ -140,46 +163,64 @@ export const fetchParcelUtilities = (parcelId: string): Promise<any> =>
 
 // ─── Infrastructure ───────────────────────────────────────────────────────────
 export const fetchInfrastructure = (): Promise<Infrastructure[]> =>
-  api.get('/infrastructure').then(r => r.data);
+  api.get('/infrastructure').then(r => normalizeArray<Infrastructure>(r.data, 'infrastructure'));
 
 export const fetchUndergroundInfrastructure = (): Promise<Utility[]> =>
-  api.get('/infrastructure/underground').then(r => r.data);
+  api.get('/infrastructure/underground').then(r => {
+    const list = normalizeArray<Utility>(r.data, 'underground_infrastructure');
+    return list.length > 0 ? list : normalizeArray<Utility>(r.data, 'utilities');
+  });
 
 export const fetchAirspaceRights = (): Promise<{
   airspace_volumes: Property[];
   aeronautical_constraints: Infrastructure[];
-}> => api.get('/infrastructure/airspace').then(r => r.data);
+}> => api.get('/infrastructure/airspace').then(r => {
+  const d = r.data || {};
+  return {
+    airspace_volumes: normalizeArray<Property>(d.airspace_volumes),
+    aeronautical_constraints: normalizeArray<Infrastructure>(d.aeronautical_constraints)
+  };
+});
 
 export const fetchElevatedInfrastructure = (): Promise<Infrastructure[]> =>
-  api.get('/infrastructure/elevated').then(r => r.data);
+  api.get('/infrastructure/elevated').then(r => {
+    const list = normalizeArray<Infrastructure>(r.data, 'elevated_infrastructure');
+    return list.length > 0 ? list : normalizeArray<Infrastructure>(r.data, 'infrastructure');
+  });
 
 export const fetchUndergroundParking = (): Promise<{
   parking_utilities: Utility[];
   parking_properties: Property[];
-}> => api.get('/infrastructure/parking').then(r => r.data);
+}> => api.get('/infrastructure/parking').then(r => {
+  const d = r.data || {};
+  return {
+    parking_utilities: normalizeArray<Utility>(d.parking_utilities),
+    parking_properties: normalizeArray<Property>(d.parking_properties)
+  };
+});
 
 // ─── GNSS ─────────────────────────────────────────────────────────────────────
 export const fetchGNSSPoints = (stationId?: string): Promise<any[]> =>
-  api.get('/gnss', { params: stationId ? { station_id: stationId } : {} }).then(r => r.data);
+  api.get('/gnss', { params: stationId ? { station_id: stationId } : {} }).then(r => normalizeArray<any>(r.data, 'points'));
 
 export const uploadGNSSPoints = (formData: FormData): Promise<any> =>
   api.post('/gnss/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(r => r.data);
 
 // ─── Drone & LiDAR & DEM/DSM ──────────────────────────────────────────────────
 export const fetchDroneDatasets = (): Promise<any[]> =>
-  api.get('/drone').then(r => r.data);
+  api.get('/drone').then(r => normalizeArray<any>(r.data, 'datasets'));
 
 export const uploadDroneDataset = (formData: FormData): Promise<any> =>
   api.post('/drone/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(r => r.data);
 
 export const fetchLiDARDatasets = (): Promise<any[]> =>
-  api.get('/lidar').then(r => r.data);
+  api.get('/lidar').then(r => normalizeArray<any>(r.data, 'datasets'));
 
 export const uploadLiDARDataset = (formData: FormData): Promise<any> =>
   api.post('/lidar/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(r => r.data);
 
 export const fetchDEMDatasets = (): Promise<any[]> =>
-  api.get('/dem').then(r => r.data);
+  api.get('/dem').then(r => normalizeArray<any>(r.data, 'datasets'));
 
 export const fetchDEMModel = (): Promise<DEMModel> =>
   api.get('/dem/model').then(r => r.data);
@@ -188,21 +229,21 @@ export const uploadDEMDataset = (formData: FormData): Promise<any> =>
   api.post('/dem/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(r => r.data);
 
 export const fetchDSMDatasets = (): Promise<any[]> =>
-  api.get('/dsm').then(r => r.data);
+  api.get('/dsm').then(r => normalizeArray<any>(r.data, 'datasets'));
 
 export const uploadDSMDataset = (formData: FormData): Promise<any> =>
   api.post('/dsm/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(r => r.data);
 
 // ─── Floor Plans ──────────────────────────────────────────────────────────────
 export const fetchFloorPlans = (buildingId?: string): Promise<any[]> =>
-  api.get('/floor-plans', { params: buildingId ? { building_id: buildingId } : {} }).then(r => r.data);
+  api.get('/floor-plans', { params: buildingId ? { building_id: buildingId } : {} }).then(r => normalizeArray<any>(r.data, 'floor_plans'));
 
 export const uploadFloorPlan = (formData: FormData): Promise<any> =>
   api.post('/floor-plans/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } }).then(r => r.data);
 
 // ─── Validation ───────────────────────────────────────────────────────────────
 export const fetchValidationResults = (severity?: string, resolved?: number): Promise<ValidationResult[]> =>
-  api.get('/validation/results', { params: { severity, resolved } }).then(r => r.data);
+  api.get('/validation/results', { params: { severity, resolved } }).then(r => normalizeArray<ValidationResult>(r.data, 'results'));
 
 export const runValidation = (): Promise<{ status: string; new_issues_detected: number; issues?: any[] }> =>
   api.post('/validation/run').then(r => r.data);
@@ -224,14 +265,25 @@ export const resolveValidation = (id: string, reason?: string): Promise<{
 
 // ─── History ──────────────────────────────────────────────────────────────────
 export const fetchHistoryTimeline = (propertyId: string): Promise<{ property_id: string; total_versions: number; timeline: PropertyVersion[] }> =>
-  api.get(`/history/timeline/${propertyId}`).then(r => r.data);
+  api.get(`/history/timeline/${propertyId}`).then(r => {
+    const d = r.data || {};
+    const timeline = Array.isArray(d) ? d : normalizeArray<PropertyVersion>(d.timeline, 'versions');
+    return {
+      property_id: d.property_id || propertyId,
+      total_versions: typeof d.total_versions === 'number' ? d.total_versions : timeline.length,
+      timeline
+    };
+  });
 
 export const comparePropertyVersions = (propertyId: string, vA: number, vB: number): Promise<any> =>
   api.get('/history/compare', { params: { property_id: propertyId, version_a: vA, version_b: vB } }).then(r => r.data);
 
 // ─── Data Sources ─────────────────────────────────────────────────────────────
 export const fetchDataSources = (): Promise<DataSource[]> =>
-  api.get('/data-sources').then(r => r.data);
+  api.get('/data-sources').then(r => {
+    const list = normalizeArray<DataSource>(r.data, 'data_sources');
+    return list.length > 0 ? list : normalizeArray<DataSource>(r.data, 'sources');
+  });
 
 export const refreshDataSources = (): Promise<{ message: string }> =>
   api.post('/data-sources/refresh').then(r => r.data);
@@ -244,14 +296,24 @@ export const fetchWaterbodiesLayer = (): Promise<any> =>
 
 // ─── Relationships & DNA ──────────────────────────────────────────────────────
 export const fetchRelationshipsGraph = (propertyId?: string): Promise<RelationshipGraph> =>
-  api.get('/relationships/graph', { params: propertyId ? { property_id: propertyId } : {} }).then(r => r.data);
+  api.get('/relationships/graph', { params: propertyId ? { property_id: propertyId } : {} }).then(r => {
+    const d = r.data || {};
+    const nodes = normalizeArray<any>(d.nodes);
+    const edges = normalizeArray<any>(d.edges);
+    return {
+      nodes,
+      edges,
+      total_nodes: typeof d.total_nodes === 'number' ? d.total_nodes : nodes.length,
+      total_edges: typeof d.total_edges === 'number' ? d.total_edges : edges.length
+    };
+  });
 
 export const fetchPropertyDNA = (propertyId: string): Promise<any> =>
   api.get(`/relationships/dna/${propertyId}`).then(r => r.data);
 
 // ─── Evidence Fusion ──────────────────────────────────────────────────────────
 export const fetchEvidenceRecords = (propertyId?: string): Promise<any[]> =>
-  api.get('/evidence', { params: propertyId ? { property_id: propertyId } : {} }).then(r => r.data);
+  api.get('/evidence', { params: propertyId ? { property_id: propertyId } : {} }).then(r => normalizeArray<any>(r.data, 'evidence'));
 
 export const fuseEvidence = (propertyId: string): Promise<any> =>
   api.post('/evidence/fuse', null, { params: { property_id: propertyId } }).then(r => r.data);

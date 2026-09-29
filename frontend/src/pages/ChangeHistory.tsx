@@ -23,11 +23,12 @@ export default function ChangeHistory() {
     setError(null);
     fetchProperties()
       .then(pList => {
-        setProperties(pList);
+        const safeProps = Array.isArray(pList) ? pList : [];
+        setProperties(safeProps);
         setLoadingProps(false);
-        if (pList.length > 0) {
-          const match = queryProp ? pList.find(p => p.id === queryProp) : null;
-          const defaultProp = match || pList.find(p => p.id === 'PROP-DEMO-003') || pList[0];
+        if (safeProps.length > 0) {
+          const match = queryProp ? safeProps.find(p => p.id === queryProp) : null;
+          const defaultProp = match || safeProps.find(p => p.id === 'PROP-DEMO-003') || safeProps[0];
           setSelectedPropertyId(defaultProp.id);
           if (defaultProp.id !== queryProp) setSearchParams({ property: defaultProp.id }, { replace: true });
         }
@@ -101,7 +102,7 @@ export default function ChangeHistory() {
               onChange={e => handlePropertyChange(e.target.value)}
               className="form-select text-xs w-64 font-medium"
             >
-              {properties.map(p => (
+              {(properties || []).map(p => (
                 <option key={p.id} value={p.id}>
                   {p.unit_number} - {p.id}
                 </option>

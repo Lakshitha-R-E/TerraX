@@ -35,12 +35,13 @@ export default function PropertyDNA() {
     setError(null);
     Promise.all([fetchProperties(), fetchULPINs()])
       .then(([propertyList, ulpinList]) => {
-        setProperties(propertyList);
-        setUlpins(ulpinList);
+        const safeProps = Array.isArray(propertyList) ? propertyList : [];
+        setProperties(safeProps);
+        setUlpins(Array.isArray(ulpinList) ? ulpinList : []);
         const targetId = searchParams.get('property');
-        const initial = targetId && propertyList.find(p => p.id === targetId)
+        const initial = targetId && safeProps.find(p => p.id === targetId)
           ? targetId
-          : propertyList[0]?.id ?? '';
+          : safeProps[0]?.id ?? '';
         setSelectedId(initial);
       })
       .catch(err => {
@@ -56,8 +57,9 @@ export default function PropertyDNA() {
     loadData();
   }, [searchParams]);
 
-  const property = properties.find(item => item.id === selectedId) ?? properties[0];
-  const ulpin = ulpins.find(item => item.property_id === property?.id)?.ulpin_code;
+  const safeProperties = Array.isArray(properties) ? properties : [];
+  const property = safeProperties.find(item => item.id === selectedId) ?? safeProperties[0];
+  const ulpin = (Array.isArray(ulpins) ? ulpins : []).find(item => item.property_id === property?.id)?.ulpin_code;
   const height = property ? property.max_z - property.min_z : 0;
 
   useEffect(() => {
@@ -100,7 +102,7 @@ export default function PropertyDNA() {
           <p className="text-xs text-slate-500 mt-1">A deterministic identity assembled from the selected property record and its 3D extent.</p>
         </div>
         <select value={property.id} onChange={event => setSelectedId(event.target.value)} className="form-select md:w-72">
-          {properties.map(item => <option key={item.id} value={item.id}>{item.unit_number} · {item.property_type}</option>)}
+          {(properties || []).map(item => <option key={item.id} value={item.id}>{item.unit_number} · {item.property_type}</option>)}
         </select>
       </header>
 

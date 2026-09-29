@@ -23,14 +23,15 @@ export default function EvidenceFusion() {
     setError(null);
     Promise.all([fetchProperties(), fetchParcels(), fetchBuildings(), fetchUtilities()])
       .then(([propertyList, parcelList, buildingList, utilityList]) => {
-        setProperties(propertyList);
-        setParcels(parcelList);
-        setBuildings(buildingList);
-        setUtilities(utilityList);
+        const safeProps = Array.isArray(propertyList) ? propertyList : [];
+        setProperties(safeProps);
+        setParcels(Array.isArray(parcelList) ? parcelList : []);
+        setBuildings(Array.isArray(buildingList) ? buildingList : []);
+        setUtilities(Array.isArray(utilityList) ? utilityList : []);
         const targetId = searchParams.get('property');
-        const initial = targetId && propertyList.find(p => p.id === targetId)
+        const initial = targetId && safeProps.find(p => p.id === targetId)
           ? targetId
-          : propertyList[0]?.id ?? '';
+          : safeProps[0]?.id ?? '';
         setSelectedId(initial);
       })
       .catch(err => {
@@ -46,7 +47,8 @@ export default function EvidenceFusion() {
     loadData();
   }, [searchParams]);
 
-  const property = properties.find(item => item.id === selectedId) ?? properties[0];
+  const safeProperties = Array.isArray(properties) ? properties : [];
+  const property = safeProperties.find(item => item.id === selectedId) ?? safeProperties[0];
 
   if (loading) {
     return (
@@ -92,7 +94,7 @@ export default function EvidenceFusion() {
   const status: EvidenceState = inconsistent > 0 ? 'inconsistent' : warnings > 0 ? 'warning' : 'consistent';
 
   return <div className="h-full overflow-y-auto p-6 space-y-5">
-    <header className="flex flex-col md:flex-row md:items-end justify-between gap-3"><div><div className="flex items-center gap-2"><h1 className="text-xl font-bold text-slate-900">Spatial Evidence Fusion</h1><span className="text-[10px] bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded uppercase">Spatial Consistency Engine</span></div><p className="text-xs text-slate-500 mt-1">Geometric cross-checking of spatial evidence layers (footprints, DEM, parcels). Does not constitute legal title verification.</p></div><select value={property.id} onChange={event => setSelectedId(event.target.value)} className="form-select md:w-72">{properties.map(item => <option key={item.id} value={item.id}>{item.unit_number} · {item.property_type}</option>)}</select></header>
+    <header className="flex flex-col md:flex-row md:items-end justify-between gap-3"><div><div className="flex items-center gap-2"><h1 className="text-xl font-bold text-slate-900">Spatial Evidence Fusion</h1><span className="text-[10px] bg-blue-100 text-blue-800 font-bold px-2 py-0.5 rounded uppercase">Spatial Consistency Engine</span></div><p className="text-xs text-slate-500 mt-1">Geometric cross-checking of spatial evidence layers (footprints, DEM, parcels). Does not constitute legal title verification.</p></div><select value={property.id} onChange={event => setSelectedId(event.target.value)} className="form-select md:w-72">{(properties || []).map(item => <option key={item.id} value={item.id}>{item.unit_number} · {item.property_type}</option>)}</select></header>
     <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
       <section className="xl:col-span-2 card"><div className="flex items-center justify-between border-b border-slate-200 pb-3"><div><p className="card-header mb-1">Evidence sources</p><p className="font-semibold text-slate-900">{property.id}</p></div><Database className="w-5 h-5 text-blue-600" /></div><div className="divide-y divide-slate-100">{rows.map(row => <div key={row.label} className="flex items-start gap-3 py-3"><StatusIcon state={row.state} /><div><p className="text-xs font-semibold text-slate-800">{row.label}</p><p className="text-[11px] text-slate-500 mt-0.5">{row.detail}</p></div><span className={`ml-auto text-[10px] font-bold uppercase ${row.state === 'consistent' ? 'text-emerald-700' : row.state === 'warning' ? 'text-amber-700' : 'text-red-700'}`}>{row.state}</span></div>)}</div></section>
       <aside className="card h-fit"><p className="card-header">Fusion result</p><div className="flex items-center justify-between"><span className="text-3xl font-bold text-slate-900">{confidence}%</span><span className={status === 'consistent' ? 'badge-valid' : status === 'warning' ? 'badge-warning' : 'badge-conflict'}>{status}</span></div><div className="h-2 bg-slate-100 rounded mt-3 overflow-hidden"><div className={`h-full ${status === 'consistent' ? 'bg-emerald-500' : status === 'warning' ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${confidence}%` }} /></div><div className="mt-5 space-y-2 text-xs"><p className="font-semibold text-slate-800">Detected checks</p><p className="text-slate-500">{inconsistent} inconsistency · {warnings} warning</p><p className="text-[11px] text-slate-500 leading-relaxed">Confidence is computed from the available study-area datasets and rules shown here.</p></div></aside>

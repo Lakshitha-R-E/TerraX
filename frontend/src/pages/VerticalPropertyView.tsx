@@ -29,12 +29,14 @@ export default function VerticalPropertyView() {
     setError(null);
     Promise.all([fetchBuildings(), fetchULPINs()])
       .then(([bList, ulList]) => {
-        setBuildings(bList);
-        setUlpins(ulList);
-        if (bList.length > 0) {
+        const safeB = Array.isArray(bList) ? bList : [];
+        const safeU = Array.isArray(ulList) ? ulList : [];
+        setBuildings(safeB);
+        setUlpins(safeU);
+        if (safeB.length > 0) {
           const targetBldId = searchParams.get('buildingId');
-          const matched = targetBldId ? bList.find(b => b.id === targetBldId) : null;
-          setSelectedBuilding(matched || bList[0]);
+          const matched = targetBldId ? safeB.find(b => b.id === targetBldId) : null;
+          setSelectedBuilding(matched || safeB[0]);
         }
       })
       .catch(err => {
@@ -56,11 +58,13 @@ export default function VerticalPropertyView() {
         fetchFloors(selectedBuilding.id),
         fetchProperties({ building_id: selectedBuilding.id })
       ]).then(([fl, pr]) => {
-        setFloors(fl);
-        setProperties(pr);
+        const safeFl = Array.isArray(fl) ? fl : [];
+        const safePr = Array.isArray(pr) ? pr : [];
+        setFloors(safeFl);
+        setProperties(safePr);
         
         const targetPropId = searchParams.get('propertyId');
-        const matchedProp = targetPropId ? pr.find(p => p.id === targetPropId) : null;
+        const matchedProp = targetPropId ? safePr.find(p => p.id === targetPropId) : null;
         
         if (matchedProp) {
           setSelectedProperty(matchedProp);
@@ -132,12 +136,12 @@ export default function VerticalPropertyView() {
           <select
             value={selectedBuilding?.id || ''}
             onChange={e => {
-              const b = buildings.find(x => x.id === e.target.value);
+              const b = (buildings || []).find(x => x.id === e.target.value);
               if (b) setSelectedBuilding(b);
             }}
             className="form-select text-xs w-60 font-medium"
           >
-            {buildings.map(b => (
+            {(buildings || []).map(b => (
               <option key={b.id} value={b.id}>
                 {b.name} ({b.total_floors} Floors)
               </option>
@@ -166,9 +170,9 @@ export default function VerticalPropertyView() {
             </div>
 
             {/* Reverse floors so top floor is at top */}
-            {[...floors].reverse().map(floor => {
+            {[...(floors || [])].reverse().map(floor => {
               const isSelected = selectedFloor?.id === floor.id;
-              const floorUnits = properties.filter(p =>
+              const floorUnits = (properties || []).filter(p =>
                 p.floor_id === floor.id || (p.min_z >= floor.elevation_min && p.max_z <= floor.elevation_max + 0.1)
               );
 
@@ -254,7 +258,7 @@ export default function VerticalPropertyView() {
                   No units currently mapped on this level.
                 </div>
               ) : (
-                unitsOnSelectedFloor.map(unit => {
+                (unitsOnSelectedFloor || []).map(unit => {
                   const isUnitSelected = selectedProperty?.id === unit.id;
                   const ulpinCode = getUlpin(unit.id);
 

@@ -18,9 +18,10 @@ export default function RelationshipGraph() {
 
   useEffect(() => {
     fetchProperties().then(pList => {
-      setProperties(pList);
-      if (pList.length > 0) {
-        const target = pList.find(p => p.id === queryPropertyId) || pList.find(p => p.id === 'PROP-DEMO-003') || pList[0];
+      const safeProps = Array.isArray(pList) ? pList : [];
+      setProperties(safeProps);
+      if (safeProps.length > 0) {
+        const target = safeProps.find(p => p.id === queryPropertyId) || safeProps.find(p => p.id === 'PROP-DEMO-003') || safeProps[0];
         setSelectedPropId(target.id);
         if (target.id !== queryPropertyId) setSearchParams({ property: target.id }, { replace: true });
       }
@@ -95,7 +96,7 @@ export default function RelationshipGraph() {
             onChange={e => handlePropertyChange(e.target.value)}
             className="form-select text-xs w-64 font-medium"
           >
-            {properties.map(p => (
+            {(properties || []).map(p => (
               <option key={p.id} value={p.id}>
                 {p.unit_number} - {p.id}
               </option>

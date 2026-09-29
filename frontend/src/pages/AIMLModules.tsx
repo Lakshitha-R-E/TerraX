@@ -207,7 +207,7 @@ export default function AIMLModules() {
                 )}
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {extractionResult.features.map((feat: any) => (
+                  {(extractionResult.features || []).map((feat: any) => (
                     <div key={feat.id} className="p-3 bg-slate-50 rounded-lg border border-slate-200 space-y-2">
                       <div className="flex items-center justify-between">
                         <span className="font-bold text-xs text-slate-900">{feat.name}</span>
@@ -333,7 +333,7 @@ export default function AIMLModules() {
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 font-mono text-slate-800">
-                      {segmentationResult.levels.map((lvl: any) => (
+                      {(segmentationResult.levels || []).map((lvl: any) => (
                         <tr key={lvl.floor_number} className="hover:bg-slate-50/80">
                           <td className="py-2 px-3 font-sans font-bold text-blue-700">{lvl.label}</td>
                           <td className="py-2 px-3">+{lvl.elevation_min}m to +{lvl.elevation_max}m</td>

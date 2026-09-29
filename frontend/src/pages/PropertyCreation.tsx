@@ -51,12 +51,12 @@ export default function PropertyCreation() {
   const [saveError, setSaveError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchParcels().then(setParcels);
+    fetchParcels().then(p => setParcels(Array.isArray(p) ? p : []));
   }, []);
 
   useEffect(() => {
     if (selectedParcelId) {
-      fetchBuildings(selectedParcelId).then(setBuildings);
+      fetchBuildings(selectedParcelId).then(b => setBuildings(Array.isArray(b) ? b : []));
     } else {
       setBuildings([]);
     }
@@ -66,15 +66,16 @@ export default function PropertyCreation() {
   useEffect(() => {
     if (selectedBuildingId) {
       fetchFloors(selectedBuildingId).then(fl => {
-        setFloors(fl);
-        if (fl.length > 0) {
-          setSelectedFloorId(fl[0].id);
-          setSelectedFloorNumber(fl[0].floor_number);
-          setMinZ(fl[0].elevation_min);
-          setMaxZ(fl[0].elevation_max);
+        const safeFl = Array.isArray(fl) ? fl : [];
+        setFloors(safeFl);
+        if (safeFl.length > 0) {
+          setSelectedFloorId(safeFl[0].id);
+          setSelectedFloorNumber(safeFl[0].floor_number);
+          setMinZ(safeFl[0].elevation_min);
+          setMaxZ(safeFl[0].elevation_max);
         }
       });
-      const b = buildings.find(x => x.id === selectedBuildingId);
+      const b = (buildings || []).find(x => x.id === selectedBuildingId);
       if (b) {
         setLat(b.centroid_lat);
         setLng(b.centroid_lng);
@@ -244,7 +245,7 @@ export default function PropertyCreation() {
                 className="form-select"
               >
                 <option value="">— Select Parcel —</option>
-                {parcels.map(p => (
+                {(parcels || []).map(p => (
                   <option key={p.id} value={p.id}>{p.parcel_number} ({p.land_use})</option>
                 ))}
               </select>
@@ -262,7 +263,7 @@ export default function PropertyCreation() {
                 className="form-select"
               >
                 <option value="">— Select Building —</option>
-                {buildings.map(b => (
+                {(buildings || []).map(b => (
                   <option key={b.id} value={b.id}>{b.name} ({b.total_floors}F)</option>
                 ))}
               </select>
@@ -274,7 +275,7 @@ export default function PropertyCreation() {
                 value={selectedFloorId}
                 onChange={e => {
                   setSelectedFloorId(e.target.value);
-                  const fl = floors.find(x => x.id === e.target.value);
+                  const fl = (floors || []).find(x => x.id === e.target.value);
                   if (fl) {
                     setSelectedFloorNumber(fl.floor_number);
                     setMinZ(fl.elevation_min);
@@ -286,7 +287,7 @@ export default function PropertyCreation() {
                 className="form-select"
               >
                 <option value="">— Select Level —</option>
-                {floors.map(f => (
+                {(floors || []).map(f => (
                   <option key={f.id} value={f.id}>{f.floor_label} (+{f.elevation_min}m to +{f.elevation_max}m)</option>
                 ))}
               </select>

@@ -35,12 +35,12 @@ export default function ULPINGenerator() {
   });
 
   useEffect(() => {
-    fetchParcels().then(setParcels);
+    fetchParcels().then(p => setParcels(Array.isArray(p) ? p : []));
   }, []);
 
   useEffect(() => {
     if (form.parcel_id) {
-      fetchBuildings(form.parcel_id).then(setBuildings);
+      fetchBuildings(form.parcel_id).then(b => setBuildings(Array.isArray(b) ? b : []));
     } else {
       setBuildings([]);
     }
@@ -50,8 +50,10 @@ export default function ULPINGenerator() {
   useEffect(() => {
     if (form.building_id) {
       fetchFloors(form.building_id).then(fl => {
-        setFloors(fl);
-        const bldg = buildings.find(b => b.id === form.building_id);
+        const safeFloors = Array.isArray(fl) ? fl : [];
+        setFloors(safeFloors);
+        const safeBuildings = Array.isArray(buildings) ? buildings : [];
+        const bldg = safeBuildings.find(b => b.id === form.building_id);
         if (bldg) {
           setForm(f => ({
             ...f,
@@ -66,7 +68,8 @@ export default function ULPINGenerator() {
   }, [form.building_id, buildings]);
 
   useEffect(() => {
-    const fl = floors.find(f => f.floor_number === form.floor);
+    const safeFloors = Array.isArray(floors) ? floors : [];
+    const fl = safeFloors.find(f => f.floor_number === form.floor);
     if (fl) {
       setForm(f => ({ ...f, min_z: fl.elevation_min, max_z: fl.elevation_max }));
     }
@@ -175,7 +178,7 @@ export default function ULPINGenerator() {
                 <label className="form-label font-semibold">Land Parcel (2D Base)</label>
                 <select className="form-select" value={form.parcel_id} onChange={e => set('parcel_id', e.target.value)}>
                   <option value="">— Select Base Parcel —</option>
-                  {parcels.map(p => (
+                  {(parcels || []).map(p => (
                     <option key={p.id} value={p.id}>{p.parcel_number} ({p.land_use})</option>
                   ))}
                 </select>
@@ -187,11 +190,11 @@ export default function ULPINGenerator() {
           {step === 1 && (
             <div className="space-y-4">
               <h2 className="text-xs font-bold text-slate-800 uppercase tracking-wider">Step 2 — Building Footprint Selection</h2>
-              {buildings.length === 0 ? (
+              {(!buildings || buildings.length === 0) ? (
                 <p className="text-xs text-slate-500">No building structures registered in parcel {form.parcel_id}.</p>
               ) : (
                 <div className="grid gap-2">
-                  {buildings.map(b => (
+                  {(buildings || []).map(b => (
                     <button
                       key={b.id}
                       type="button"
@@ -225,7 +228,7 @@ export default function ULPINGenerator() {
                 <div>
                   <label className="form-label font-semibold">Floor Level</label>
                   <select className="form-select" value={form.floor} onChange={e => set('floor', parseInt(e.target.value))}>
-                    {floors.map(f => (
+                    {(floors || []).map(f => (
                       <option key={f.floor_number} value={f.floor_number}>{f.floor_label} (+{f.elevation_min}m to +{f.elevation_max}m)</option>
                     ))}
                   </select>

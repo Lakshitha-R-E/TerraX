@@ -27,7 +27,7 @@ export default function ValidationCenter() {
     setErrorMessage('');
     try {
       const data = await fetchValidationResults();
-      setResults(data);
+      setResults(Array.isArray(data) ? data : []);
     } catch (e: any) {
       console.error(e);
       setErrorMessage(e?.response?.data?.detail || 'Failed to load validation results from cadastre database.');
@@ -56,7 +56,7 @@ export default function ValidationCenter() {
     setErrorMessage('');
     try {
       const res = await resolveValidation(id);
-      setResults(prev => prev.map(item => item.id === id ? { ...item, resolved: 1 } : item));
+      setResults(prev => (Array.isArray(prev) ? prev : []).map(item => item.id === id ? { ...item, resolved: 1 } : item));
       if (res.recalculated) {
         const r = res.recalculated;
         setActionSuccess(
@@ -73,7 +73,8 @@ export default function ValidationCenter() {
     }
   };
 
-  const filteredResults = results.filter(r => {
+  const safeResults = Array.isArray(results) ? results : [];
+  const filteredResults = safeResults.filter(r => {
     if (propertyFilter && r.property_id !== propertyFilter) return false;
     if (severityFilter === 'all') return true;
     return r.severity === severityFilter;

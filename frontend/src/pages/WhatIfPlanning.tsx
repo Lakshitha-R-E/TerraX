@@ -143,15 +143,17 @@ export default function WhatIfPlanning() {
     let active = true;
     Promise.all([fetchProperties(), fetchBuildings()]).then(([propertyList, buildingList]) => {
       if (!active) return;
-      setProperties(propertyList);
-      setBuildings(buildingList);
-      const selected = propertyList.find(property => property.id === queryPropertyId) ||
-        propertyList.find(property => property.id === 'PROP-DEMO-003') || propertyList[0];
+      const safeProps = Array.isArray(propertyList) ? propertyList : [];
+      const safeBuildings = Array.isArray(buildingList) ? buildingList : [];
+      setProperties(safeProps);
+      setBuildings(safeBuildings);
+      const selected = safeProps.find(property => property.id === queryPropertyId) ||
+        safeProps.find(property => property.id === 'PROP-DEMO-003') || safeProps[0];
       if (selected) {
         setSelectedPropertyId(selected.id);
         setSelectedBuildingId(selected.building_id || '');
-        setFloorHeight(buildingList.find(building => building.id === selected.building_id)?.floor_height || 3);
-        setNewFloorNumber((buildingList.find(building => building.id === selected.building_id)?.total_floors || 3) + 1);
+        setFloorHeight(safeBuildings.find(building => building.id === selected.building_id)?.floor_height || 3);
+        setNewFloorNumber((safeBuildings.find(building => building.id === selected.building_id)?.total_floors || 3) + 1);
         if (selected.id !== queryPropertyId) setSearchParams({ property: selected.id }, { replace: true });
       }
     }).catch(loadError => {
@@ -248,7 +250,7 @@ export default function WhatIfPlanning() {
             <div>
               <label className="form-label font-semibold">Selected Property</label>
               <select value={selectedPropertyId} onChange={e => handlePropertyChange(e.target.value)} className="form-select text-xs" disabled={loadingData}>
-                {properties.map(property => <option key={property.id} value={property.id}>{property.unit_number} - {property.id}</option>)}
+                {(properties || []).map(property => <option key={property.id} value={property.id}>{property.unit_number} - {property.id}</option>)}
               </select>
               {selectedProperty && <p className="text-[10px] text-slate-500 mt-1">Parcel {selectedProperty.parcel_id} / Building {selectedProperty.building_id || 'not linked'} / Floor {selectedProperty.floor_id || 'not linked'}</p>}
             </div>
@@ -340,12 +342,12 @@ export default function WhatIfPlanning() {
                     ['Validation Summary', `${simulationResult.summary.conflict_count} conflicts / ${simulationResult.summary.warning_count} warnings`],
                   ].map(([label, value]) => <div key={label} className="p-2 bg-slate-50 border border-slate-200 rounded"><span className="block text-[10px] uppercase text-slate-500">{label}</span><strong className="font-mono">{value}</strong></div>)}
                 </div>
-                {simulationResult.conflicts.length === 0 ? (
+                {(!simulationResult.conflicts || simulationResult.conflicts.length === 0) ? (
                   <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded font-medium flex items-center gap-2">
                     <CheckCircle className="w-4 h-4 text-emerald-600 flex-shrink-0" />
                     <span>No Spatial Conflicts Detected</span>
                   </div>
-                ) : simulationResult.conflicts.map((conflict, index) => (
+                ) : (simulationResult.conflicts || []).map((conflict, index) => (
                   <div key={`${conflict.affected_entity || conflict.type}-${index}`} className={clsx('p-3 border rounded space-y-1', conflict.severity === 'conflict' ? 'bg-red-50 border-red-200 text-red-800' : 'bg-amber-50 border-amber-200 text-amber-800')}>
                     <div className="flex items-center justify-between">
                       <span className="flex items-center gap-1.5 font-bold"><AlertTriangle className="w-3.5 h-3.5" />{conflict.type}</span>

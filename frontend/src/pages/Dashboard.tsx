@@ -34,7 +34,7 @@ export default function Dashboard() {
         fetchProperties(),
       ]);
       setStats(s);
-      setActivities(a.activities || []);
+      setActivities(Array.isArray(a?.activities) ? a.activities : (Array.isArray(a) ? (a as any) : []));
       const colors: Record<string, string> = {
         'Apartment Unit': '#2563eb',
         'Commercial Unit': '#059669',
@@ -44,8 +44,11 @@ export default function Dashboard() {
         'Air-Space Volume': '#7c3aed',
         'Surface Parcel': '#0891b2',
       };
-      const counts = properties.reduce<Record<string, number>>((result, property) => {
-        result[property.property_type] = (result[property.property_type] || 0) + 1;
+      const safeProperties = Array.isArray(properties) ? properties : [];
+      const counts = safeProperties.reduce<Record<string, number>>((result, property) => {
+        if (property && property.property_type) {
+          result[property.property_type] = (result[property.property_type] || 0) + 1;
+        }
         return result;
       }, {});
       setPropertyTypeData(Object.entries(counts).map(([name, count]) => ({ name, count, fill: colors[name] || '#64748b' })));

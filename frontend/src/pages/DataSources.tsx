@@ -41,7 +41,7 @@ export default function DataSources() {
   const load = () => {
     setLoading(true);
     fetchDataSources().then(data => {
-      setSources(data);
+      setSources(Array.isArray(data) ? data : []);
       setLoading(false);
     }).catch(() => setLoading(false));
   };
@@ -60,7 +60,8 @@ export default function DataSources() {
 
   useEffect(() => { load(); }, []);
 
-  const filteredSources = filter === 'ALL' ? sources : sources.filter(s => s.data_status === filter);
+  const safeSources = Array.isArray(sources) ? sources : [];
+  const filteredSources = filter === 'ALL' ? safeSources : safeSources.filter(s => s.data_status === filter);
 
   return (
     <div className="h-full flex flex-col p-6 overflow-hidden bg-white">
@@ -139,7 +140,7 @@ export default function DataSources() {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {filteredSources.map((src) => (
+            {(filteredSources || []).map((src) => (
               <div key={src.source_id} className="bg-white border border-slate-200 rounded-lg shadow-sm hover:shadow-md transition-shadow flex flex-col p-4">
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex items-center gap-2">

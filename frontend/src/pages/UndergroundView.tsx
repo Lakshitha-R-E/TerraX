@@ -21,9 +21,11 @@ export default function UndergroundView() {
     setError(null);
     Promise.all([fetchUtilities(), fetchParcels()])
       .then(([uList, pList]) => {
-        setUtilities(uList);
-        if (uList.length > 0) setSelectedUtility(uList[0]);
-        setParcels(pList);
+        const safeU = Array.isArray(uList) ? uList : [];
+        const safeP = Array.isArray(pList) ? pList : [];
+        setUtilities(safeU);
+        if (safeU.length > 0) setSelectedUtility(safeU[0]);
+        setParcels(safeP);
         setLoading(false);
       })
       .catch((err) => {
@@ -37,7 +39,8 @@ export default function UndergroundView() {
     loadData();
   }, []);
 
-  const filteredUtilities = utilities.filter(u => {
+  const safeUtilities = Array.isArray(utilities) ? utilities : [];
+  const filteredUtilities = safeUtilities.filter(u => {
     const matchesType = filterType === 'all' || u.utility_type === filterType;
     const matchesParcel = filterParcel === 'all' || u.parcel_id === filterParcel;
     return matchesType && matchesParcel;
@@ -89,7 +92,7 @@ export default function UndergroundView() {
             className="form-select text-xs w-44"
           >
             <option value="all">All Parcels</option>
-            {parcels.map(p => (
+            {(parcels || []).map(p => (
               <option key={p.id} value={p.id}>{p.parcel_number}</option>
             ))}
           </select>
@@ -243,7 +246,7 @@ export default function UndergroundView() {
                   <p className="text-[11px] text-slate-400 mt-0.5">Try adjusting the filter criteria or selected parcel.</p>
                 </div>
               ) : (
-                filteredUtilities.map(util => {
+                (filteredUtilities || []).map(util => {
                 const isSelected = selectedUtility?.id === util.id;
                 return (
                   <div

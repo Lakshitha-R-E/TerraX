@@ -38,10 +38,10 @@ export default function Properties() {
       fetchBuildings(),
       fetchULPINs()
     ]).then(([pr, pa, bu, ul]) => {
-      setProperties(pr);
-      setParcels(pa);
-      setBuildings(bu);
-      setUlpins(ul);
+      setProperties(Array.isArray(pr) ? pr : []);
+      setParcels(Array.isArray(pa) ? pa : []);
+      setBuildings(Array.isArray(bu) ? bu : []);
+      setUlpins(Array.isArray(ul) ? ul : []);
     }).catch(err => {
       console.error('Failed to load property data:', err);
       setError(err?.response?.data?.detail || 'Failed to load property cadastre records.');
@@ -64,18 +64,20 @@ export default function Properties() {
     setActiveTab('overview');
     try {
       const hist = await fetchHistory(prop.id);
-      setPropertyHistory(hist);
+      setPropertyHistory(Array.isArray(hist) ? hist : []);
     } catch {
       setPropertyHistory([]);
     }
   };
 
-  const filteredProperties = properties.filter(p => {
+  const safeProperties = Array.isArray(properties) ? properties : [];
+  const filteredProperties = safeProperties.filter(p => {
+    if (!p) return false;
     const matchesSearch =
       !searchQuery ||
-      p.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.unit_number.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.property_type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (p.id && p.id.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (p.unit_number && p.unit_number.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (p.property_type && p.property_type.toLowerCase().includes(searchQuery.toLowerCase())) ||
       (p.building_id && p.building_id.toLowerCase().includes(searchQuery.toLowerCase()));
 
     const matchesType = selectedType === 'all' || p.property_type === selectedType;
@@ -212,7 +214,7 @@ export default function Properties() {
             className="form-select text-xs"
           >
             <option value="all">All Buildings</option>
-            {buildings.map(b => (
+            {(buildings || []).map(b => (
               <option key={b.id} value={b.id}>{b.name} ({b.building_number})</option>
             ))}
           </select>
